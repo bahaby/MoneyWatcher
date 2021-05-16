@@ -13,7 +13,5 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
   @override
   Stream<BudgetState> mapEventToState(
     BudgetEvent event,
-  ) async* {
-    // TODO: implement mapEventToState
-  }
+  ) async* {}
 }

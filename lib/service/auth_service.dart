@@ -1,12 +1,10 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:money_watcher/model/user.dart';
 
 class AuthService {
-  final String registerUrl = "https://f64671e05fc2.ngrok.io/api/auth/register2";
-  final String loginUrl = "https://f64671e05fc2.ngrok.io/api/auth/login";
+  final String registerUrl = "https://5fbcbb9c16c2.ngrok.io/api/auth/register";
+  final String loginUrl = "https://5fbcbb9c16c2.ngrok.io/api/auth/login";
 
   Future<String> login(User user) async {
     final headers = {
@@ -22,7 +20,7 @@ class AuthService {
     if (response.statusCode == 200) {
       return responseData['token'];
     } else {
-      throw ErrorDescription("login error");
+      throw Exception("login error");
     }
   }
 
@@ -40,7 +38,7 @@ class AuthService {
     if (response.statusCode == 201) {
       return User.fromJson(responseData);
     } else {
-      throw ErrorDescription("register error");
+      throw Exception("register error");
     }
   }
 }

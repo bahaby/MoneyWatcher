@@ -1,3 +1,1 @@
-class Budget {
-  
-}
+class Budget {}
