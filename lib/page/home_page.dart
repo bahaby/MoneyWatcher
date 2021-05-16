@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:money_watcher/model/user.dart';
 import 'package:money_watcher/page/add_budget_page.dart';
+import 'package:money_watcher/service/auth_service.dart';
 
 class HomePage extends StatelessWidget {
   static const routeName = '/home_page';
@@ -19,11 +21,38 @@ class HomePage extends StatelessWidget {
           ),
           title: Text('Home'),
         ),
-        body: TabBarView(
+        body: Stack(
           children: [
-            Center(child: Text("Günlük")),
-            Center(child: Text("Haftalık")),
-            Center(child: Text("Aylık")),
+            Text("Test"),
+            TabBarView(
+              children: [
+                Center(
+                    child: Column(
+                  children: [
+                    Text("Günlük"),
+                    ElevatedButton(
+                        onPressed: () async {
+                          final service = AuthService();
+                          print(await service.login(
+                              User(email: "baha@by.com", password: "1")));
+                        },
+                        child: Text("Login")),
+                    ElevatedButton(
+                        onPressed: () async {
+                          final service = AuthService();
+                          var response = await service.register(User(
+                              fullName: "Baha",
+                              email: "baha@by.com",
+                              password: "1"));
+                          print(response.password + " - " + response.fullName);
+                        },
+                        child: Text("Register")),
+                  ],
+                )),
+                Center(child: Text("Haftalık")),
+                Center(child: Text("Aylık")),
+              ],
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
