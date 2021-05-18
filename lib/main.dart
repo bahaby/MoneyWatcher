@@ -8,8 +8,12 @@ import 'package:money_watcher/page/home_page.dart';
 import 'package:money_watcher/page/login_page.dart';
 import 'package:money_watcher/page/register_page.dart';
 import 'package:money_watcher/service/auth_service.dart';
+import 'package:money_watcher/service_locator.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  setup();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
