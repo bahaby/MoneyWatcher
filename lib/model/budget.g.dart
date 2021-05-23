@@ -20,7 +20,7 @@ Budget _$BudgetFromJson(Map<String, dynamic> json) {
     category: json['category'] == null
         ? null
         : Category.fromJson(json['category'] as Map<String, dynamic>),
-    categoryId: json['categoryId'] as String,
+    categoryId: json['categoryId'] as int,
     budgetDate: BudgetDate.fromJson(json['budgetDate'] as Map<String, dynamic>),
   );
 }

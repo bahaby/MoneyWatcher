@@ -1,6 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
+const NGROK_ID = '6de4bc5607ae';
+
 class LocalStorageService {
   static LocalStorageService? _instance;
   static SharedPreferences? _preferences;

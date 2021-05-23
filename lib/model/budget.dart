@@ -17,7 +17,7 @@ class Budget extends Equatable {
   final User? user;
   final String userId;
   final Category? category;
-  final String categoryId;
+  final int categoryId;
   final BudgetDate budgetDate;
 
   Budget({

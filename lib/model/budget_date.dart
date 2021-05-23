@@ -8,19 +8,19 @@ class BudgetDate extends Equatable {
   final String? id;
   final DateTime startDate;
   final DateTime finishDate;
-  final bool isMountly;
+  final bool isMonthly;
   final String? budgetId;
 
   BudgetDate({
     this.id,
     required this.startDate,
     required this.finishDate,
-    required this.isMountly,
+    required this.isMonthly,
     this.budgetId,
   });
 
   @override
-  List<Object?> get props => [id, startDate, finishDate, isMountly, budgetId];
+  List<Object?> get props => [id, startDate, finishDate, isMonthly, budgetId];
 
   factory BudgetDate.fromJson(Map<String, dynamic> json) =>
       _$BudgetDateFromJson(json);

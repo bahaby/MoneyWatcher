@@ -5,7 +5,7 @@ import 'package:money_watcher/service/local_storage_service.dart';
 import 'package:money_watcher/service_locator.dart';
 
 class AuthService {
-  final String authUrl = "https://cdf7f90d7138.ngrok.io/api/auth/";
+  final String authUrl = "https://$NGROK_ID.ngrok.io/api/auth/";
 
   Future<String> login(User user) async {
     final headers = {
