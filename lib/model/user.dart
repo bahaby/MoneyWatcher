@@ -3,20 +3,22 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class User extends Equatable {
-  final String fullName;
+  final String? fullName;
+
   final String email;
-  final String password;
+
+  final String? password;
 
   User({
-    this.fullName = "",
+    this.fullName,
     required this.email,
-    this.password = "",
+    this.password,
   });
 
   @override
-  List<Object> get props => [fullName, email, password];
+  List<Object> get props => [fullName!, email, password!];
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_watcher/bloc/auth/form_submission_status.dart';
@@ -12,7 +14,7 @@ import '../service_locator.dart';
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   static const routeName = '/login_page';
-  var storageService = getIt<LocalStorageService>();
+  final storageService = getIt<LocalStorageService>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _loginForm(BuildContext context) {
+    print(storageService.getFromDisk('token'));
     return BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           final formStatus = state.formStatus;
@@ -49,7 +52,7 @@ class LoginPage extends StatelessWidget {
                 _loginButton(),
                 SizedBox(height: 100),
                 _registerPageLink(context),
-                Text(storageService.getFromDisk('token')!),
+                Text(storageService.getFromDisk('token')),
               ],
             ),
           ),

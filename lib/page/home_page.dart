@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:money_watcher/model/user.dart';
 import 'package:money_watcher/page/add_budget_page.dart';
-import 'package:money_watcher/service/auth_service.dart';
 import 'package:money_watcher/service/local_storage_service.dart';
 import 'package:money_watcher/service_locator.dart';
 
 class HomePage extends StatelessWidget {
   static const routeName = '/home_page';
+  final storageService = getIt<LocalStorageService>();
 
   @override
   Widget build(BuildContext context) {

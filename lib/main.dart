@@ -8,14 +8,17 @@ import 'package:money_watcher/page/home_page.dart';
 import 'package:money_watcher/page/login_page.dart';
 import 'package:money_watcher/page/register_page.dart';
 import 'package:money_watcher/service/auth_service.dart';
+import 'package:money_watcher/service/local_storage_service.dart';
 import 'package:money_watcher/service_locator.dart';
 
-void main() {
-  setup();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setup();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  final storageService = getIt<LocalStorageService>();
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
@@ -33,7 +36,9 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'Material App',
-          initialRoute: LoginPage.routeName,
+          initialRoute: (storageService.checkJwtToken())
+              ? LoginPage.routeName
+              : HomePage.routeName,
           routes: {
             HomePage.routeName: (_) => HomePage(),
             LoginPage.routeName: (_) => LoginPage(),
