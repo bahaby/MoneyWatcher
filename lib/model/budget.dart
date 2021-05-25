@@ -15,7 +15,7 @@ class Budget extends Equatable {
   final String detail;
   final bool budgetType;
   final User? user;
-  final String userId;
+  final String? userId;
   final Category? category;
   final int categoryId;
   final BudgetDate budgetDate;
@@ -27,7 +27,7 @@ class Budget extends Equatable {
     required this.detail,
     required this.budgetType,
     this.user,
-    required this.userId,
+    this.userId,
     this.category,
     required this.categoryId,
     required this.budgetDate,

@@ -9,16 +9,16 @@ part 'category.g.dart';
 class Category extends Equatable {
   final int id;
   final String name;
-  final List<Budget> budgets;
+  final List<Budget>? budgets;
 
   Category({
     required this.id,
     required this.name,
-    required this.budgets,
+    this.budgets,
   });
 
   @override
-  List<Object> get props => [id, name, budgets];
+  List<Object?> get props => [id, name, budgets];
 
   factory Category.fromJson(Map<String, dynamic> json) =>
       _$CategoryFromJson(json);

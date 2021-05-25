@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:money_watcher/bloc/auth/form_submission_status.dart';
+import 'package:money_watcher/bloc/form_submission_status.dart';
 import 'package:money_watcher/model/user.dart';
 import 'package:money_watcher/service/auth_service.dart';
+import 'package:money_watcher/service_locator.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthService authService;
-  LoginBloc(this.authService) : super(LoginState());
+  final authService = getIt<AuthService>();
+  LoginBloc() : super(LoginState());
 
   @override
   Stream<LoginState> mapEventToState(

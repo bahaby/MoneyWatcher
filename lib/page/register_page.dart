@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_watcher/bloc/auth/form_submission_status.dart';
+import 'package:money_watcher/bloc/form_submission_status.dart';
 import 'package:money_watcher/bloc/auth/login/login_bloc.dart';
 import 'package:money_watcher/bloc/auth/register/register_bloc.dart';
 import 'package:money_watcher/page/home_page.dart';
 import 'package:money_watcher/page/login_page.dart';
-import 'package:money_watcher/service/auth_service.dart';
 
 class RegisterPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -15,9 +14,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (context) => LoginBloc(
-          context.read<AuthService>(),
-        ),
+        create: (context) => LoginBloc(),
         child: _registerForm(context),
       ),
     );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:money_watcher/bloc/auth/login/login_bloc.dart';
 import 'package:money_watcher/bloc/auth/register/register_bloc.dart';
+import 'package:money_watcher/bloc/budget/add_budget/add_budget_bloc.dart';
 import 'package:money_watcher/page/add_budget_page.dart';
 import 'package:money_watcher/page/detail_budget_page.dart';
 import 'package:money_watcher/page/home_page.dart';
@@ -21,32 +23,30 @@ class MyApp extends StatelessWidget {
   final storageService = getIt<LocalStorageService>();
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
+    return MultiBlocProvider(
       providers: [
-        RepositoryProvider(create: (context) => AuthService()),
-      ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => LoginBloc(context.read<AuthService>()),
-          ),
-          BlocProvider(
-            create: (context) => RegisterBloc(context.read<AuthService>()),
-          )
-        ],
-        child: MaterialApp(
-          title: 'Material App',
-          initialRoute: (storageService.checkJwtToken())
-              ? LoginPage.routeName
-              : HomePage.routeName,
-          routes: {
-            HomePage.routeName: (_) => HomePage(),
-            LoginPage.routeName: (_) => LoginPage(),
-            RegisterPage.routeName: (_) => RegisterPage(),
-            DetailBudgetPage.routeName: (_) => DetailBudgetPage(),
-            AddBudgetPage.routeName: (_) => AddBudgetPage(),
-          },
+        BlocProvider(
+          create: (context) => LoginBloc(),
         ),
+        BlocProvider(
+          create: (context) => RegisterBloc(),
+        ),
+        BlocProvider(
+          create: (context) => AddBudgetBloc(),
+        )
+      ],
+      child: MaterialApp(
+        title: 'Material App',
+        initialRoute: (storageService.isJwtTokenValid())
+            ? HomePage.routeName
+            : LoginPage.routeName,
+        routes: {
+          HomePage.routeName: (_) => HomePage(),
+          LoginPage.routeName: (_) => LoginPage(),
+          RegisterPage.routeName: (_) => RegisterPage(),
+          DetailBudgetPage.routeName: (_) => DetailBudgetPage(),
+          AddBudgetPage.routeName: (_) => AddBudgetPage(),
+        },
       ),
     );
   }

@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 abstract class FormSubmissionStatus {
   const FormSubmissionStatus();
 }
@@ -7,6 +9,10 @@ class InitialFormStatus extends FormSubmissionStatus {
 }
 
 class FormSubmitting extends FormSubmissionStatus {}
+
+class FormLoading extends FormSubmissionStatus {
+  const FormLoading();
+}
 
 class SubmissionSuccess extends FormSubmissionStatus {}
 

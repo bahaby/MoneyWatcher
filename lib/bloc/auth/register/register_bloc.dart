@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:money_watcher/bloc/auth/form_submission_status.dart';
+import 'package:money_watcher/bloc/form_submission_status.dart';
 import 'package:money_watcher/model/user.dart';
 import 'package:money_watcher/service/auth_service.dart';
+import 'package:money_watcher/service_locator.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  final AuthService authService;
-  RegisterBloc(this.authService) : super(RegisterState());
+  final authService = getIt<AuthService>();
+  RegisterBloc() : super(RegisterState());
 
   @override
   Stream<RegisterState> mapEventToState(

@@ -2,11 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_watcher/bloc/auth/form_submission_status.dart';
+import 'package:money_watcher/bloc/form_submission_status.dart';
 import 'package:money_watcher/bloc/auth/login/login_bloc.dart';
 import 'package:money_watcher/page/home_page.dart';
 import 'package:money_watcher/page/register_page.dart';
-import 'package:money_watcher/service/auth_service.dart';
 import 'package:money_watcher/service/local_storage_service.dart';
 
 import '../service_locator.dart';
@@ -20,16 +19,13 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (context) => LoginBloc(
-          context.read<AuthService>(),
-        ),
+        create: (context) => LoginBloc(),
         child: _loginForm(context),
       ),
     );
   }
 
   Widget _loginForm(BuildContext context) {
-    print(storageService.getFromDisk('token'));
     return BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           final formStatus = state.formStatus;
@@ -52,7 +48,7 @@ class LoginPage extends StatelessWidget {
                 _loginButton(),
                 SizedBox(height: 100),
                 _registerPageLink(context),
-                Text(storageService.getFromDisk('token')),
+                Text(storageService.getJwtToken()),
               ],
             ),
           ),

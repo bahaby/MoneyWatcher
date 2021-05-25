@@ -16,7 +16,7 @@ Budget _$BudgetFromJson(Map<String, dynamic> json) {
     user: json['user'] == null
         ? null
         : User.fromJson(json['user'] as Map<String, dynamic>),
-    userId: json['userId'] as String,
+    userId: json['userId'] as String?,
     category: json['category'] == null
         ? null
         : Category.fromJson(json['category'] as Map<String, dynamic>),
@@ -40,7 +40,7 @@ Map<String, dynamic> _$BudgetToJson(Budget instance) {
   val['detail'] = instance.detail;
   val['budgetType'] = instance.budgetType;
   writeNotNull('user', instance.user);
-  val['userId'] = instance.userId;
+  writeNotNull('userId', instance.userId);
   writeNotNull('category', instance.category);
   val['categoryId'] = instance.categoryId;
   val['budgetDate'] = instance.budgetDate;

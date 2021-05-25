@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-const NGROK_ID = '6de4bc5607ae';
+const NGROK_ID = '7a196db8afed';
 
 class LocalStorageService {
   static LocalStorageService? _instance;
@@ -16,14 +16,48 @@ class LocalStorageService {
     return _instance;
   }
 
-  String getFromDisk(String key) {
+  String? getFromDisk(String key) {
     var value = _preferences?.getString(key);
-    return value ?? '';
+    return value;
   }
 
-  bool checkJwtToken() {
-    var value = getFromDisk('token');
-    return JwtDecoder.isExpired(value);
+  String getJwtToken() {
+    return getFromDisk('token') ?? '';
+  }
+
+  bool isJwtTokenValid() {
+    if (isJwtTokenExpired()) {
+      _removeFromDisk('token');
+      _removeFromDisk('userId');
+      _removeFromDisk('userEmail');
+      return false;
+    } else {
+      var jwtMap = JwtDecoder.decode(getJwtToken());
+      var userIdKey = jwtMap.keys
+          .firstWhere((element) => element.endsWith('nameidentifier'));
+      var userEmailKey =
+          jwtMap.keys.firstWhere((element) => element.endsWith('emailaddress'));
+      saveToDisk('userId', jwtMap[userIdKey]);
+      saveToDisk('userEmail', jwtMap[userEmailKey]);
+      return true;
+    }
+  }
+
+  bool isJwtTokenExpired() {
+    var value = getJwtToken();
+    if (value == '') {
+      return true;
+    } else {
+      if (JwtDecoder.isExpired(value)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  void _removeFromDisk(String key) {
+    _preferences?.remove(key);
   }
 
   void saveToDisk(String key, String content) {

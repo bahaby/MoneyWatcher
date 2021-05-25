@@ -7,14 +7,14 @@ part 'budget_date.g.dart';
 class BudgetDate extends Equatable {
   final String? id;
   final DateTime startDate;
-  final DateTime finishDate;
+  final DateTime? finishDate;
   final bool isMonthly;
   final String? budgetId;
 
   BudgetDate({
     this.id,
     required this.startDate,
-    required this.finishDate,
+    this.finishDate,
     required this.isMonthly,
     this.budgetId,
   });
