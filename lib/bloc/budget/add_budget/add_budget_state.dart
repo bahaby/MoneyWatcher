@@ -62,7 +62,7 @@ class AddBudgetState extends Equatable {
       categoryId: categoryId ?? this.categoryId,
       categories: categories ?? this.categories,
       startDate: startDate ?? this.startDate,
-      finishDate: finishDate,
+      finishDate: finishDate ?? this.finishDate,
       isMonthly: isMonthly ?? this.isMonthly,
       formStatus: formStatus ?? this.formStatus,
     );

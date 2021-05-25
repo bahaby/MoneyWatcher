@@ -45,17 +45,12 @@ class AddBudgetBloc extends Bloc<AddBudgetEvent, AddBudgetState> {
       yield state.copyWith(finishDate: event.finishDate);
     } else if (event is AddBudgetIsMonthlyChanged) {
       yield state.copyWith(isMonthly: event.isMonthly);
-      if (event.isMonthly == false) {
-        yield state.copyWith(finishDate: null);
-      } else {
-        yield state.copyWith(finishDate: state.startDate);
-      }
     } else if (event is AddBudgetSubmitted) {
       yield state.copyWith(formStatus: FormSubmitting());
       try {
         await budgetService.addBudget(Budget(
           budgetDate: BudgetDate(
-            finishDate: state.finishDate,
+            finishDate: (state.isMonthly) ? state.finishDate : null,
             startDate: state.startDate,
             isMonthly: state.isMonthly,
           ),
@@ -66,6 +61,7 @@ class AddBudgetBloc extends Bloc<AddBudgetEvent, AddBudgetState> {
           price: state.price,
         ));
         yield state.copyWith(formStatus: SubmissionSuccess());
+        yield state.copyWith(formStatus: InitialFormStatus());
       } on Exception catch (e) {
         yield state.copyWith(formStatus: SubmissionFailed(e));
       }
