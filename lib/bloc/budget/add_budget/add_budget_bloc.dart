@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+
 import 'package:money_watcher/bloc/form_submission_status.dart';
 import 'package:money_watcher/model/budget.dart';
 import 'package:money_watcher/model/budget_date.dart';
 import 'package:money_watcher/model/category.dart';
+import 'package:money_watcher/page/login_page.dart';
 import 'package:money_watcher/service/budget_service.dart';
+import 'package:money_watcher/service/local_storage_service.dart';
 import 'package:money_watcher/service_locator.dart';
 
 part 'add_budget_event.dart';
@@ -14,8 +18,11 @@ part 'add_budget_state.dart';
 
 class AddBudgetBloc extends Bloc<AddBudgetEvent, AddBudgetState> {
   final budgetService = getIt<BudgetService>();
-
-  AddBudgetBloc() : super(AddBudgetState()) {
+  final storageService = getIt<LocalStorageService>();
+  final GlobalKey<NavigatorState> navigatorKey;
+  AddBudgetBloc(
+    this.navigatorKey,
+  ) : super(AddBudgetState()) {
     add(AddBudgetLoading());
   }
 
@@ -46,24 +53,31 @@ class AddBudgetBloc extends Bloc<AddBudgetEvent, AddBudgetState> {
     } else if (event is AddBudgetIsMonthlyChanged) {
       yield state.copyWith(isMonthly: event.isMonthly);
     } else if (event is AddBudgetSubmitted) {
-      yield state.copyWith(formStatus: FormSubmitting());
-      try {
-        await budgetService.addBudget(Budget(
-          budgetDate: BudgetDate(
-            finishDate: (state.isMonthly) ? state.finishDate : null,
-            startDate: state.startDate,
-            isMonthly: state.isMonthly,
-          ),
-          budgetType: state.budgetType,
-          categoryId: state.categoryId,
-          detail: state.detail,
-          name: state.name,
-          price: state.price,
-        ));
-        yield state.copyWith(formStatus: SubmissionSuccess());
-        yield state.copyWith(formStatus: InitialFormStatus());
-      } on Exception catch (e) {
-        yield state.copyWith(formStatus: SubmissionFailed(e));
+      if (!storageService.isJwtTokenValid()) {
+        navigatorKey.currentState!.pushNamed(LoginPage.routeName);
+      } else {
+        yield state.copyWith(formStatus: FormSubmitting());
+        try {
+          await budgetService.addBudget(Budget(
+            budgetDate: BudgetDate(
+              finishDate: (state.isMonthly) ? state.finishDate : null,
+              startDate: state.startDate,
+              isMonthly: state.isMonthly,
+            ),
+            budgetType: state.budgetType!,
+            categoryId: state.categoryId!,
+            detail: state.detail,
+            name: state.name,
+            price: double.parse(state.price),
+          ));
+          yield state.copyWith(formStatus: SubmissionSuccess());
+          yield AddBudgetState().copyWith(
+            formStatus: InitialFormStatus(),
+            categories: state.categories,
+          );
+        } on Exception catch (e) {
+          yield state.copyWith(formStatus: SubmissionFailed(e));
+        }
       }
     }
   }

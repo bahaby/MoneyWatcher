@@ -8,15 +8,13 @@ import 'package:money_watcher/page/login_page.dart';
 
 class RegisterPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
+  final _focusScopeNode = FocusScopeNode();
   static const routeName = '/register_page';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocProvider(
-        create: (context) => LoginBloc(),
-        child: _registerForm(context),
-      ),
+      body: _registerForm(context),
     );
   }
 
@@ -32,19 +30,22 @@ class RegisterPage extends StatelessWidget {
         },
         child: Form(
           key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _fullNameField(),
-                _emailField(),
-                _passwordField(),
-                SizedBox(height: 20),
-                _registerButton(),
-                SizedBox(height: 100),
-                _loginPageLink(context),
-              ],
+          child: FocusScope(
+            node: _focusScopeNode,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _fullNameField(),
+                  _emailField(),
+                  _passwordField(),
+                  SizedBox(height: 20),
+                  _registerButton(),
+                  SizedBox(height: 100),
+                  _loginPageLink(context),
+                ],
+              ),
             ),
           ),
         ));
@@ -58,6 +59,7 @@ class RegisterPage extends StatelessWidget {
           hintText: 'Name',
         ),
         validator: (value) => state.isValidName ? null : 'Name is too short',
+        onEditingComplete: _focusScopeNode.nextFocus,
         onChanged: (value) => context.read<RegisterBloc>().add(
               RegisterNameChanged(fullName: value),
             ),
@@ -74,6 +76,7 @@ class RegisterPage extends StatelessWidget {
         ),
         validator: (value) =>
             state.isValidEmail ? null : 'Email format is not correct',
+        onEditingComplete: _focusScopeNode.nextFocus,
         onChanged: (value) => context.read<RegisterBloc>().add(
               RegisterEmailChanged(email: value),
             ),
@@ -91,6 +94,7 @@ class RegisterPage extends StatelessWidget {
         ),
         validator: (value) =>
             state.isValidPassword ? null : 'Password is too short',
+        onEditingComplete: _focusScopeNode.unfocus,
         onChanged: (value) => context.read<RegisterBloc>().add(
               RegisterPasswordChanged(password: value),
             ),

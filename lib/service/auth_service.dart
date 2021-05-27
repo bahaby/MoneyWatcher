@@ -4,6 +4,8 @@ import 'package:money_watcher/model/user.dart';
 import 'package:money_watcher/service/local_storage_service.dart';
 import 'package:money_watcher/service_locator.dart';
 
+import '../ngrok_id.dart';
+
 class AuthService {
   final String authUrl = "https://$NGROK_ID.ngrok.io/api/auth/";
 

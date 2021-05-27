@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_watcher/bloc/form_submission_status.dart';
@@ -11,6 +9,7 @@ import 'package:money_watcher/service/local_storage_service.dart';
 import '../service_locator.dart';
 
 class LoginPage extends StatelessWidget {
+  final _focusScopeNode = FocusScopeNode();
   final _formKey = GlobalKey<FormState>();
   static const routeName = '/login_page';
   final storageService = getIt<LocalStorageService>();
@@ -18,10 +17,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocProvider(
-        create: (context) => LoginBloc(),
-        child: _loginForm(context),
-      ),
+      body: _loginForm(context),
     );
   }
 
@@ -37,19 +33,22 @@ class LoginPage extends StatelessWidget {
         },
         child: Form(
           key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _emailField(),
-                _passwordField(),
-                SizedBox(height: 20),
-                _loginButton(),
-                SizedBox(height: 100),
-                _registerPageLink(context),
-                Text(storageService.getJwtToken()),
-              ],
+          child: FocusScope(
+            node: _focusScopeNode,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _emailField(),
+                  _passwordField(),
+                  SizedBox(height: 20),
+                  _loginButton(),
+                  SizedBox(height: 100),
+                  _registerPageLink(context),
+                  Text(storageService.getJwtToken()),
+                ],
+              ),
             ),
           ),
         ));
@@ -64,6 +63,7 @@ class LoginPage extends StatelessWidget {
         ),
         validator: (value) =>
             state.isValidEmail ? null : 'Email format is not correct',
+        onEditingComplete: _focusScopeNode.nextFocus,
         onChanged: (value) => context.read<LoginBloc>().add(
               LoginEmailChanged(email: value),
             ),
@@ -81,6 +81,7 @@ class LoginPage extends StatelessWidget {
         ),
         validator: (value) =>
             state.isValidPassword ? null : 'Password is too short',
+        onEditingComplete: _focusScopeNode.unfocus,
         onChanged: (value) => context.read<LoginBloc>().add(
               LoginPasswordChanged(password: value),
             ),

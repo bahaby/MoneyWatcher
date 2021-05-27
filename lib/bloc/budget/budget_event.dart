@@ -7,3 +7,8 @@ abstract class BudgetEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class GetBudgets extends BudgetEvent {
+  final DateTime? selectedDate;
+
+  GetBudgets({this.selectedDate});
+}

@@ -2,10 +2,10 @@ part of 'add_budget_bloc.dart';
 
 class AddBudgetState extends Equatable {
   final String name;
-  final double price;
+  final String price;
   final String detail;
-  final bool budgetType;
-  final int categoryId;
+  final bool? budgetType;
+  final int? categoryId;
   final List<Category> categories;
   late final DateTime startDate;
   late final DateTime? finishDate;
@@ -14,10 +14,10 @@ class AddBudgetState extends Equatable {
 
   AddBudgetState({
     this.name = "",
-    this.price = 0,
+    this.price = "",
     this.detail = "",
-    this.budgetType = false,
-    this.categoryId = 0,
+    this.budgetType,
+    this.categoryId,
     this.categories = const [],
     startDate,
     this.finishDate,
@@ -43,7 +43,7 @@ class AddBudgetState extends Equatable {
 
   AddBudgetState copyWith({
     String? name,
-    double? price,
+    String? price,
     String? detail,
     bool? budgetType,
     int? categoryId,
@@ -67,5 +67,24 @@ class AddBudgetState extends Equatable {
       formStatus: formStatus ?? this.formStatus,
     );
   }
-  // TODO: validation missing
+
+  bool get isValidName {
+    return name.length > 3;
+  }
+
+  bool get isValidPrice {
+    return double.tryParse(price) != null;
+  }
+
+  bool get isValidDetail {
+    return detail.length > 10;
+  }
+
+  bool get isValidBudgetType {
+    return budgetType != null;
+  }
+
+  bool get isValidCategory {
+    return categoryId != null;
+  }
 }

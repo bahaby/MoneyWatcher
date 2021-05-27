@@ -9,15 +9,31 @@ abstract class BudgetState extends Equatable {
 
 class BudgetInitial extends BudgetState {}
 
+class BudgetEmpty extends BudgetState {}
+
 class BudgetLoading extends BudgetState {}
 
-class BudgetDaily extends BudgetState {
-  final List<Budget> budgets;
+class BudgetLoaded extends BudgetState {
+  final List<Budget> selectedMonthBudgets;
+  late final DateTime selectedDate;
 
-  BudgetDaily(this.budgets);
-  
+  BudgetLoaded({
+    required this.selectedMonthBudgets,
+    selectedDate,
+  }) {
+    this.selectedDate = selectedDate ?? DateTime.now();
+  }
+
+  BudgetLoaded copyWith({
+    List<Budget>? selectedMonthBudgets,
+    DateTime? selectedDate,
+  }) {
+    return BudgetLoaded(
+      selectedMonthBudgets: selectedMonthBudgets ?? this.selectedMonthBudgets,
+      selectedDate: selectedDate ?? this.selectedDate,
+    );
+  }
+
+  @override
+  List<Object> get props => [selectedDate, selectedMonthBudgets];
 }
-
-class BudgetWeekly extends BudgetState {}
-
-class BudgetMonthly extends BudgetState {}

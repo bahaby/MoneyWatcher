@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_watcher/bloc/budget/add_budget/add_budget_bloc.dart';
+import 'package:money_watcher/bloc/budget/budget_bloc.dart';
 import 'package:money_watcher/bloc/form_submission_status.dart';
 import 'package:money_watcher/model/category.dart';
 import 'package:money_watcher/page/home_page.dart';
 import 'package:intl/intl.dart';
-import 'package:money_watcher/service/budget_service.dart';
-import 'package:money_watcher/service_locator.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddBudgetPage extends StatefulWidget {
   static const routeName = '/add_budget_page';
@@ -18,6 +16,7 @@ class AddBudgetPage extends StatefulWidget {
 
 class _AddBudgetPageState extends State<AddBudgetPage> {
   final _formKey = GlobalKey<FormState>();
+  final _focusScopeNode = FocusScopeNode();
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +34,13 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
             }
           },
           builder: (context, state) {
-            if (state.formStatus is FormLoading) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              return Column(
-                children: [
-                  _addBudgetForm(context),
-                ],
-              );
-            }
+            return state.formStatus is FormLoading
+                ? Center(child: CircularProgressIndicator())
+                : Column(
+                    children: [
+                      _addBudgetForm(context),
+                    ],
+                  );
           },
         ));
   }
@@ -52,22 +49,25 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
     return Form(
       key: _formKey,
       child: Expanded(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _nameField(),
-                _priceField(),
-                _detailField(),
-                _categoriesField(),
-                _budgetTypeField(),
-                _isMonthlyField(),
-                _startDateField(),
-                _finishDateField(),
-                SizedBox(height: 20),
-                _addButton(),
-              ],
+        child: FocusScope(
+          node: _focusScopeNode,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 40),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _nameField(),
+                  _priceField(),
+                  _detailField(),
+                  _categoriesField(),
+                  _budgetTypeField(),
+                  _isMonthlyField(),
+                  _startDateField(),
+                  _finishDateField(),
+                  SizedBox(height: 20),
+                  _addButton(),
+                ],
+              ),
             ),
           ),
         ),
@@ -82,7 +82,8 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
         decoration: InputDecoration(
           hintText: 'Name',
         ),
-        validator: null,
+        validator: (value) => state.isValidName ? null : "İsim çok kısa.",
+        onEditingComplete: _focusScopeNode.nextFocus,
         onChanged: (value) => context.read<AddBudgetBloc>().add(
               AddBudgetNameChanged(name: value),
             ),
@@ -98,11 +99,11 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
         decoration: InputDecoration(
           hintText: 'Price',
         ),
-        validator: null,
+        validator: (value) => state.isValidPrice ? null : "Hatalı giriş",
+        onEditingComplete: _focusScopeNode.nextFocus,
         onChanged: (value) {
-          var parsedValue = double.parse(value);
           context.read<AddBudgetBloc>().add(
-                AddBudgetPriceChanged(price: parsedValue),
+                AddBudgetPriceChanged(price: value),
               );
         },
       );
@@ -117,7 +118,8 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
         decoration: InputDecoration(
           hintText: 'Detail',
         ),
-        validator: null,
+        validator: (value) => state.isValidDetail ? null : "Metin çok kısa.",
+        onEditingComplete: _focusScopeNode.nextFocus,
         onChanged: (value) => context.read<AddBudgetBloc>().add(
               AddBudgetDetailChanged(detail: value),
             ),
@@ -137,6 +139,9 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
           hint: Text("Budget Type"),
           items: budgetTypes,
           value: selectedType,
+          onTap: _focusScopeNode.unfocus,
+          validator: (value) =>
+              state.isValidBudgetType ? null : "Bütçe tipi seçiniz.",
           onChanged: (value) {
             selectedType = value;
             context.read<AddBudgetBloc>().add(
@@ -157,6 +162,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
           ),
           value: state.isMonthly,
           onChanged: (value) {
+            _focusScopeNode.unfocus();
             context.read<AddBudgetBloc>().add(
                   AddBudgetIsMonthlyChanged(isMonthly: value!),
                 );
@@ -172,6 +178,9 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
           hint: Text("Category"),
           items: _createCategories(state.categories),
           value: selectedCategory,
+          onTap: () => _focusScopeNode.unfocus(),
+          validator: (value) =>
+              state.isValidCategory ? null : "Kategori seçiniz.",
           onChanged: (value) {
             selectedCategory = value;
             context.read<AddBudgetBloc>().add(
@@ -191,6 +200,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
           alignment: Alignment.centerRight,
           child: TextButton(
               onPressed: () async {
+                _focusScopeNode.unfocus();
                 var date = await _pickDate(context);
                 if (date != null) {
                   context.read<AddBudgetBloc>().add(
@@ -215,6 +225,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () async {
+                    _focusScopeNode.unfocus();
                     var date =
                         await _pickDate(context, firstDate: state.startDate);
                     if (date != null) {
@@ -242,6 +253,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     context.read<AddBudgetBloc>().add(AddBudgetSubmitted());
+                    context.read<BudgetBloc>().add(GetBudgets());
                   }
                 },
                 child: Text('Ekle'),

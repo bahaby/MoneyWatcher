@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:money_watcher/model/budget.dart';
 import 'package:money_watcher/model/category.dart';
 import 'package:money_watcher/service_locator.dart';
+import '../ngrok_id.dart';
 import 'local_storage_service.dart';
 
 class BudgetService {
@@ -28,6 +29,26 @@ class BudgetService {
       return Budget.fromJson(responseData['data']);
     } else {
       throw Exception("add budget error");
+    }
+  }
+
+  Future<List<Budget>> getLastMonthBudgets() async {
+    final token = storageService.getJwtToken();
+    final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token,
+    };
+    http.Response response =
+        await http.get(Uri.parse(budgetUrl), headers: headers);
+    final responseData = jsonDecode(response.body);
+    List<Budget> budgets = [];
+    if (response.statusCode == 200) {
+      budgets = responseData['data']
+          .map<Budget>((budget) => Budget.fromJson(budget))
+          .toList();
+      return budgets;
+    } else {
+      throw Exception("budgets error");
     }
   }
 

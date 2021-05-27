@@ -17,7 +17,7 @@ class AddBudgetNameChanged extends AddBudgetEvent {
 }
 
 class AddBudgetPriceChanged extends AddBudgetEvent {
-  final double price;
+  final String price;
 
   AddBudgetPriceChanged({required this.price});
 
