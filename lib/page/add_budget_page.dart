@@ -226,16 +226,19 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                 child: TextButton(
                   onPressed: () async {
                     _focusScopeNode.unfocus();
-                    var date =
-                        await _pickDate(context, firstDate: state.startDate);
+                    var date = await _pickDate(context,
+                        firstDate:
+                            DateUtils.addMonthsToMonthDate(state.startDate, 1)
+                                .add(Duration(days: state.startDate.day - 1)));
                     if (date != null) {
                       context.read<AddBudgetBloc>().add(
                             AddBudgetFinishDateChanged(finishDate: date),
                           );
                     }
                   },
-                  child: Text(DateFormat('d.MM.y')
-                      .format(state.finishDate ?? DateTime.now())),
+                  child: Text(DateFormat('d.MM.y').format(state.finishDate ??
+                      DateUtils.addMonthsToMonthDate(DateTime.now(), 1)
+                          .add(Duration(days: DateTime.now().day - 1)))),
                 ),
               ),
             )
@@ -253,7 +256,9 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     context.read<AddBudgetBloc>().add(AddBudgetSubmitted());
-                    context.read<BudgetBloc>().add(GetBudgets());
+                    context
+                        .read<BudgetBloc>()
+                        .add(GetBudgets(selectedDate: DateTime.now()));
                   }
                 },
                 child: Text('Ekle'),
@@ -282,7 +287,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
     final initialDate = addBudgetState.startDate;
     final newDate = await showDatePicker(
       context: context,
-      initialDate: initialDate,
+      initialDate: firstDate ?? initialDate,
       firstDate: firstDate ?? DateTime(DateTime.now().year - 5),
       lastDate: lastDate ?? DateTime(DateTime.now().year + 5),
     );

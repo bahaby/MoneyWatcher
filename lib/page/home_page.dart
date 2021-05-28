@@ -82,7 +82,8 @@ class _HomePageState extends State<HomePage>
                         Center(
                             child: BudgetWeekOverallWidget(
                           model: WeeklyBudgetViewModel.fromBudgets(
-                              budgetsToMap: state.selectedMonthBudgets),
+                              budgetsToMap: state.selectedMonthBudgets,
+                              selectedDate: _selectedDate),
                         )),
                         Center(child: Text("Aylık")),
                       ],

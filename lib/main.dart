@@ -20,10 +20,6 @@ void main() async {
   Intl.defaultLocale = 'tr_TR';
   initializeDateFormatting();
   await setup();
-  var currentDate = DateTime(2021, 5, 1);
-  var firstWeekStartDate =
-      currentDate.subtract(Duration(days: currentDate.weekday - 1));
-  print(firstWeekStartDate);
   runApp(MyApp());
 }
 

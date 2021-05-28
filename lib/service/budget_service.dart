@@ -32,20 +32,26 @@ class BudgetService {
     }
   }
 
-  Future<List<Budget>> getLastMonthBudgets() async {
+  Future<List<Budget>> getMonthBudgets(
+      {required int year, required int month}) async {
     final token = storageService.getJwtToken();
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + token,
     };
-    http.Response response =
-        await http.get(Uri.parse(budgetUrl), headers: headers);
+    var queryParameters = {
+      "monthNum": '$month',
+      "yearNum": '$year',
+    };
+    var url = Uri.parse(budgetUrl + 'getbudgetswithdate')
+        .replace(queryParameters: queryParameters);
+    http.Response response = await http.get(url, headers: headers);
     final responseData = jsonDecode(response.body);
     List<Budget> budgets = [];
     if (response.statusCode == 200) {
-      budgets = responseData['data']
-          .map<Budget>((budget) => Budget.fromJson(budget))
-          .toList();
+      budgets = responseData['data'].map<Budget>((budget) {
+        return Budget.fromJson(budget);
+      }).toList();
       return budgets;
     } else {
       throw Exception("budgets error");

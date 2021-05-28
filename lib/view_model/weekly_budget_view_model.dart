@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:money_watcher/model/budget.dart';
 
 class WeeklyBudgetViewModel {
@@ -11,23 +12,21 @@ class WeeklyBudgetViewModel {
   });
 
   factory WeeklyBudgetViewModel.fromBudgets(
-      {required List<Budget> budgetsToMap}) {
+      {required List<Budget> budgetsToMap, required DateTime selectedDate}) {
     List<Budget> budgets = List.from(budgetsToMap);
     double monthExpense = 0;
     double monthIncome = 0;
+    DateTime firstDayOfMonth =
+        DateTime(selectedDate.year, selectedDate.month, 1);
     //for storing days which have budgets
     List<DateTime> days = [];
-    DateTime? currentDate;
     List<WeeklyBudgetItemViewModel> weekBudgetItems = [];
 
     budgets.forEach((budget) {
       var date = budget.budgetDate.startDate;
-      if (days.isEmpty) {
-        currentDate = DateTime(date.year, date.month, 1);
-      }
       //if day isn't already in list add that day
-      if (!days.any((day) => day.day == date.day && day.month == date.month)) {
-        days.add(budget.budgetDate.startDate);
+      if (!days.any((day) => day.day == date.day)) {
+        days.add(DateTime(selectedDate.year, selectedDate.month, date.day));
       }
 
       //looking budgets for monthly income and expense
@@ -38,27 +37,19 @@ class WeeklyBudgetViewModel {
       }
       //to get date of current month
     });
-
-    if (days.isEmpty) {
-      return WeeklyBudgetViewModel(
-        weekBudgetItems: weekBudgetItems,
-        monthExpense: monthExpense,
-        monthIncome: monthIncome,
-      );
-    }
     var firstWeekStartDate =
-        currentDate!.subtract(Duration(days: currentDate!.weekday - 1));
+        firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday - 1));
     for (var i = firstWeekStartDate;
-        i.month <= currentDate!.month && i.year == currentDate!.year;
+        i.isBefore(DateUtils.addMonthsToMonthDate(firstDayOfMonth, 1));
         i = i.add(Duration(days: 7))) {
       double weekIncome = 0;
       double weekExpense = 0;
       //getting days which have budget in that week
-      var daysOfWeek = days.where(
-          (day) => day.isAfter(i) && day.isBefore(i.add(Duration(days: 6))));
+      var daysOfWeek =
+          days.where((day) => day.day >= i.day && day.day <= i.day + 6);
       budgets.forEach((budget) {
-        if (daysOfWeek.any(
-            (day) => day.difference(budget.budgetDate.startDate).inDays == 0)) {
+        if (daysOfWeek
+            .any((day) => day.day == budget.budgetDate.startDate.day)) {
           if (budget.budgetType == false) {
             weekExpense += budget.price;
           } else {

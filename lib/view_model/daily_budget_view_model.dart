@@ -19,13 +19,14 @@ class DailyBudgetViewModel {
     double monthExpense = 0;
     double monthIncome = 0;
     //for storing days which have budgets
-    List<int> days = [];
+    List<DateTime> days = [];
 
     List<DailyBudgetsItemViewModel> daysBudgetsItems = [];
     budgets.forEach((budget) {
+      var date = budget.budgetDate.startDate;
       //if day isn't already in list add that day
-      if (!days.contains(budget.budgetDate.startDate.day)) {
-        days.add(budget.budgetDate.startDate.day);
+      if (!days.any((day) => date.difference(day).inDays == 0)) {
+        days.add(date);
       }
 
       //looking budgets for monthly income and expense
@@ -42,19 +43,17 @@ class DailyBudgetViewModel {
         monthIncome: monthIncome,
       );
     }
-    days.forEach((dayNumber) {
+    days.forEach((day) {
       //for storing day's budget view models
       List<DailyBudgetItemViewModel> dayBudgetItems = [];
+
       double dayExpense = 0;
       double dayIncome = 0;
-
       //getting day's budgets
       var dayBudgets = budgets
-          .where((budget) => budget.budgetDate.startDate.day == dayNumber)
+          .where((budget) =>
+              budget.budgetDate.startDate.difference(day).inDays == 0)
           .toList();
-
-      DateTime day = dayBudgets.first.budgetDate.startDate;
-
       //looping through day's budgets
       dayBudgets.forEach((budget) {
         //storing day's budget view models

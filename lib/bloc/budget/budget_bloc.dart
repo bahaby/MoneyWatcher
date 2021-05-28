@@ -33,7 +33,8 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
         navigatorKey.currentState!.pushNamed(LoginPage.routeName);
       } else {
         yield BudgetLoading();
-        final List<Budget> budgets = await budgetService.getLastMonthBudgets();
+        final List<Budget> budgets = await budgetService.getMonthBudgets(
+            year: event.selectedDate.year, month: event.selectedDate.month);
         yield BudgetLoaded(
           selectedMonthBudgets: budgets,
           selectedDate: event.selectedDate,

@@ -25,7 +25,7 @@ class BudgetDayItemWidget extends StatelessWidget {
         trailing: Text(
           model.price.toStringAsFixed(2) + ' ₺',
           style: TextStyle(
-            color: model.budgetType ? Colors.red : Colors.blue,
+            color: model.budgetType ? Colors.blue : Colors.red,
           ),
         ),
       ),

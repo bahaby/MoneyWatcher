@@ -8,7 +8,7 @@ abstract class BudgetEvent extends Equatable {
 }
 
 class GetBudgets extends BudgetEvent {
-  final DateTime? selectedDate;
+  final DateTime selectedDate;
 
-  GetBudgets({this.selectedDate});
+  GetBudgets({required this.selectedDate});
 }
