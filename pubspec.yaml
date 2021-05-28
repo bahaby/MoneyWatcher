@@ -32,6 +32,8 @@ dependencies:
   json_annotation: ^4.0.1
   jwt_decoder: ^2.0.1
   shared_preferences: ^2.0.5
+  flutter_localizations:
+   sdk: flutter
 
 dev_dependencies:
   flutter_test:

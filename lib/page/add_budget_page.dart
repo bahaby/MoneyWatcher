@@ -208,7 +208,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                       );
                 }
               },
-              child: Text(DateFormat('d, MM, y').format(state.startDate))),
+              child: Text(DateFormat('d.MM.y').format(state.startDate))),
         ),
       );
     });
@@ -234,7 +234,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
                           );
                     }
                   },
-                  child: Text(DateFormat('d, MM, y')
+                  child: Text(DateFormat('d.MM.y')
                       .format(state.finishDate ?? DateTime.now())),
                 ),
               ),

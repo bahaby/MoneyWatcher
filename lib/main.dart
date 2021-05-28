@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:money_watcher/bloc/auth/login/login_bloc.dart';
 import 'package:money_watcher/bloc/auth/register/register_bloc.dart';
 import 'package:money_watcher/bloc/budget/add_budget/add_budget_bloc.dart';
@@ -14,7 +17,13 @@ import 'package:money_watcher/service_locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Intl.defaultLocale = 'tr_TR';
+  initializeDateFormatting();
   await setup();
+  var currentDate = DateTime(2021, 5, 1);
+  var firstWeekStartDate =
+      currentDate.subtract(Duration(days: currentDate.weekday - 1));
+  print(firstWeekStartDate);
   runApp(MyApp());
 }
 

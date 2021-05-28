@@ -1,4 +1,5 @@
 import 'package:money_watcher/model/budget.dart';
+import 'package:money_watcher/model/category.dart';
 
 class DailyBudgetViewModel {
   final double monthIncome;
@@ -10,7 +11,10 @@ class DailyBudgetViewModel {
     required this.daysBudgetsItems,
   });
 
-  factory DailyBudgetViewModel.fromBudgets(List<Budget> budgetsToMap) {
+  factory DailyBudgetViewModel.fromBudgets({
+    required List<Budget> budgetsToMap,
+    required List<Category> categories,
+  }) {
     List<Budget> budgets = List.from(budgetsToMap);
     double monthExpense = 0;
     double monthIncome = 0;
@@ -31,7 +35,13 @@ class DailyBudgetViewModel {
         monthIncome += budget.price;
       }
     });
-
+    if (days.isEmpty) {
+      return DailyBudgetViewModel(
+        daysBudgetsItems: daysBudgetsItems,
+        monthExpense: monthExpense,
+        monthIncome: monthIncome,
+      );
+    }
     days.forEach((dayNumber) {
       //for storing day's budget view models
       List<DailyBudgetItemViewModel> dayBudgetItems = [];
@@ -53,7 +63,9 @@ class DailyBudgetViewModel {
           budgetType: budget.budgetType,
           name: budget.name,
           detail: budget.detail,
-          categoryId: budget.categoryId,
+          category: categories
+              .firstWhere((category) => category.id == budget.categoryId)
+              .name,
         ));
 
         //calculating daily expanses and incomes
@@ -71,6 +83,9 @@ class DailyBudgetViewModel {
         dayExpense: dayExpense,
         dayBudgetItems: dayBudgetItems,
       ));
+    });
+    daysBudgetsItems.sort((a, b) {
+      return b.day.compareTo(a.day);
     });
     return DailyBudgetViewModel(
       monthIncome: monthIncome,
@@ -99,12 +114,12 @@ class DailyBudgetItemViewModel {
   final bool budgetType;
   final String name;
   final String detail;
-  final int categoryId;
+  final String category;
   DailyBudgetItemViewModel({
     required this.price,
     required this.budgetType,
     required this.name,
     required this.detail,
-    required this.categoryId,
+    required this.category,
   });
 }
