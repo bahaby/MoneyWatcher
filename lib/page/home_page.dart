@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:money_watcher/bloc/budget/add_budget/add_budget_bloc.dart';
+import 'package:money_watcher/bloc/app/app_bloc.dart';
 import 'package:money_watcher/bloc/budget/budget_bloc.dart';
-import 'package:money_watcher/bloc/form_submission_status.dart';
+import 'package:money_watcher/bloc/budget/budget_detail/budget_detail_bloc.dart';
+import 'package:money_watcher/bloc/budget/budget_form/budget_form_bloc.dart';
 import 'package:money_watcher/model/category.dart';
-import 'package:money_watcher/page/add_budget_page.dart';
+import 'package:money_watcher/page/add_update_budget_page.dart';
 import 'package:money_watcher/page/loading_page.dart';
 import 'package:money_watcher/service/budget_service.dart';
 import 'package:money_watcher/service/local_storage_service.dart';
@@ -12,10 +13,7 @@ import 'package:money_watcher/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_watcher/view_model/daily_budget_view_model.dart';
 import 'package:money_watcher/view_model/weekly_budget_view_model.dart';
-import 'package:money_watcher/widget/daily_budgets/budget_day_item_widget.dart';
 import 'package:money_watcher/widget/daily_budgets/budget_day_overall_widget.dart';
-import 'package:money_watcher/widget/daily_budgets/budget_day_widget.dart';
-import 'package:money_watcher/widget/weekly_budgets/budget_week_item_widget.dart';
 import 'package:money_watcher/widget/weekly_budgets/budget_week_overall_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,6 +33,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    context.read<BudgetBloc>().add(GetBudgets(selectedDate: _selectedDate));
     _tabController = TabController(length: 3, vsync: this);
     _tabController?.addListener(() {
       setState(() {
@@ -45,11 +44,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddBudgetBloc, AddBudgetState>(
-        builder: (context, state) {
-      if (state.formStatus is FormLoading) {
-        return LoadingPage();
-      } else {
+    return BlocBuilder<AppBloc, AppState>(builder: (context, state) {
+      if (state is AppLoaded) {
         categories = state.categories;
         return BlocBuilder<BudgetBloc, BudgetState>(
           builder: (context, state) {
@@ -92,12 +88,15 @@ class _HomePageState extends State<HomePage>
               floatingActionButton: FloatingActionButton(
                 child: Icon(Icons.add),
                 onPressed: () async {
-                  Navigator.of(context).pushNamed(AddBudgetPage.routeName);
+                  Navigator.of(context)
+                      .pushNamed(AddUpdateBudgetPage.routeName);
                 },
               ),
             );
           },
         );
+      } else {
+        return LoadingPage();
       }
     });
   }

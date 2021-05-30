@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 import 'package:money_watcher/model/budget.dart';
+import 'package:money_watcher/model/category.dart';
 import 'package:money_watcher/page/login_page.dart';
 import 'package:money_watcher/service/budget_service.dart';
 import 'package:money_watcher/service/local_storage_service.dart';
@@ -20,9 +21,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
   final GlobalKey<NavigatorState> navigatorKey;
   BudgetBloc(
     this.navigatorKey,
-  ) : super(BudgetInitial()) {
-    add(GetBudgets(selectedDate: DateTime.now()));
-  }
+  ) : super(BudgetInitial());
 
   @override
   Stream<BudgetState> mapEventToState(
@@ -35,10 +34,11 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
         yield BudgetLoading();
         final List<Budget> budgets = await budgetService.getMonthBudgets(
             year: event.selectedDate.year, month: event.selectedDate.month);
-        yield BudgetLoaded(
+        var budgetLoadedState = BudgetLoaded(
           selectedMonthBudgets: budgets,
           selectedDate: event.selectedDate,
         );
+        yield budgetLoadedState;
       }
     }
   }

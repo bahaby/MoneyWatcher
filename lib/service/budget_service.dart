@@ -32,6 +32,69 @@ class BudgetService {
     }
   }
 
+  Future<Budget> updateBudget(Budget budget) async {
+    final token = storageService.getJwtToken();
+    final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token,
+    };
+    final data = jsonEncode(budget.toJson());
+    http.Response response = await http.put(
+      Uri.parse(budgetUrl),
+      headers: headers,
+      body: data,
+    );
+    final responseData = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return Budget.fromJson(responseData['data']);
+    } else {
+      throw Exception("add budget error");
+    }
+  }
+
+  Future<bool> deleteBudget(String budgetId) async {
+    final token = storageService.getJwtToken();
+    final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token,
+    };
+    final data = jsonEncode({"id": budgetId});
+    http.Response response = await http.delete(
+      Uri.parse(budgetUrl),
+      headers: headers,
+      body: data,
+    );
+    final responseData = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      print(responseData.toString());
+      return responseData['data'];
+    } else {
+      throw Exception("add budget error");
+    }
+  }
+
+  Future<Budget> getBudget(String budgetId) async {
+    final token = storageService.getJwtToken();
+    final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token,
+    };
+    var queryParameters = {"id": "$budgetId"};
+    http.Response response = await http.get(
+      Uri.parse(budgetUrl + 'getBudget').replace(
+        queryParameters: queryParameters,
+      ),
+      headers: headers,
+    );
+    final responseData = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      print(responseData.toString());
+      return Budget.fromJson(responseData['data']);
+    } else {
+      throw Exception("add budget error");
+    }
+  }
+
   Future<List<Budget>> getMonthBudgets(
       {required int year, required int month}) async {
     final token = storageService.getJwtToken();

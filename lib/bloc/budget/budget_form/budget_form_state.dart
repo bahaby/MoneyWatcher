@@ -1,70 +1,77 @@
-part of 'add_budget_bloc.dart';
+part of 'budget_form_bloc.dart';
 
-class AddBudgetState extends Equatable {
+class BudgetFormState extends Equatable {
+  final String id;
   final String name;
   final String price;
   final String detail;
   final bool? budgetType;
   final int? categoryId;
-  final List<Category> categories;
   late final DateTime startDate;
-  late final DateTime? finishDate;
+  late final DateTime finishDate;
   final bool isMonthly;
   final FormSubmissionStatus formStatus;
+  final bool isUpdate;
 
-  AddBudgetState({
+  BudgetFormState({
+    this.id = "",
     this.name = "",
     this.price = "",
     this.detail = "",
     this.budgetType,
     this.categoryId,
-    this.categories = const [],
     startDate,
-    this.finishDate,
+    finishDate,
     this.isMonthly = false,
-    this.formStatus = const FormLoading(),
+    this.isUpdate = false,
+    this.formStatus = const InitialFormStatus(),
   }) {
     this.startDate = startDate ?? DateTime.now();
+    this.finishDate = finishDate ??
+        DateUtils.addMonthsToMonthDate(DateTime.now(), 1)
+            .add(Duration(days: DateTime.now().day - 1));
   }
 
   @override
   List<Object?> get props => [
+        id,
         name,
         price,
         detail,
         budgetType,
         categoryId,
-        categories,
         startDate,
+        isUpdate,
         finishDate,
         isMonthly,
         formStatus,
       ];
 
-  AddBudgetState copyWith({
+  BudgetFormState copyWith({
+    String? id,
     String? name,
     String? price,
     String? detail,
     bool? budgetType,
     int? categoryId,
-    List<Category>? categories,
-    String? userId,
     DateTime? startDate,
     DateTime? finishDate,
     bool? isMonthly,
     FormSubmissionStatus? formStatus,
+    bool? isUpdate,
   }) {
-    return AddBudgetState(
+    return BudgetFormState(
+      id: id ?? this.id,
       name: name ?? this.name,
       price: price ?? this.price,
       detail: detail ?? this.detail,
       budgetType: budgetType ?? this.budgetType,
       categoryId: categoryId ?? this.categoryId,
-      categories: categories ?? this.categories,
       startDate: startDate ?? this.startDate,
       finishDate: finishDate ?? this.finishDate,
       isMonthly: isMonthly ?? this.isMonthly,
       formStatus: formStatus ?? this.formStatus,
+      isUpdate: isUpdate ?? this.isUpdate,
     );
   }
 
