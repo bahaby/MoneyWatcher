@@ -27,6 +27,7 @@ class BudgetLoaded extends BudgetState {
   BudgetLoaded copyWith({
     List<Budget>? selectedMonthBudgets,
     DateTime? selectedDate,
+    List<Category>? categories,
   }) {
     return BudgetLoaded(
       selectedMonthBudgets: selectedMonthBudgets ?? this.selectedMonthBudgets,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_watcher/bloc/form_submission_status.dart';
-import 'package:money_watcher/bloc/auth/login/login_bloc.dart';
 import 'package:money_watcher/bloc/auth/register/register_bloc.dart';
 import 'package:money_watcher/page/home_page.dart';
 import 'package:money_watcher/page/login_page.dart';

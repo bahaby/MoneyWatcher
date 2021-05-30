@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:money_watcher/bloc/app/app_bloc.dart';
 import 'package:money_watcher/bloc/auth/login/login_bloc.dart';
 import 'package:money_watcher/bloc/auth/register/register_bloc.dart';
-import 'package:money_watcher/bloc/budget/add_budget/add_budget_bloc.dart';
 import 'package:money_watcher/bloc/budget/budget_bloc.dart';
-import 'package:money_watcher/page/add_budget_page.dart';
+import 'package:money_watcher/bloc/budget/budget_form/budget_form_bloc.dart';
+import 'package:money_watcher/page/add_update_budget_page.dart';
 import 'package:money_watcher/page/detail_budget_page.dart';
 import 'package:money_watcher/page/home_page.dart';
 import 'package:money_watcher/page/login_page.dart';
@@ -31,13 +31,16 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+          create: (context) => AppBloc(),
+        ),
+        BlocProvider(
           create: (context) => LoginBloc(),
         ),
         BlocProvider(
           create: (context) => RegisterBloc(),
         ),
         BlocProvider(
-          create: (context) => AddBudgetBloc(_navigatorKey),
+          create: (context) => BudgetFormBloc(_navigatorKey),
         ),
         BlocProvider(
           create: (context) => BudgetBloc(_navigatorKey),
@@ -55,7 +58,7 @@ class MyApp extends StatelessWidget {
           LoginPage.routeName: (_) => LoginPage(),
           RegisterPage.routeName: (_) => RegisterPage(),
           DetailBudgetPage.routeName: (_) => DetailBudgetPage(),
-          AddBudgetPage.routeName: (_) => AddBudgetPage(),
+          AddUpdateBudgetPage.routeName: (_) => AddUpdateBudgetPage(),
         },
       ),
     );
