@@ -58,6 +58,7 @@ class DailyBudgetViewModel {
       dayBudgets.forEach((budget) {
         //storing day's budget view models
         dayBudgetItems.add(DailyBudgetItemViewModel(
+          budgetId: budget.id!,
           price: budget.price,
           budgetType: budget.budgetType,
           name: budget.name,
@@ -109,12 +110,14 @@ class DailyBudgetsItemViewModel {
 }
 
 class DailyBudgetItemViewModel {
+  final String budgetId;
   final double price;
   final bool budgetType;
   final String name;
   final String detail;
   final String category;
   DailyBudgetItemViewModel({
+    required this.budgetId,
     required this.price,
     required this.budgetType,
     required this.name,

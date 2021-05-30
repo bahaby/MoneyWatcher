@@ -67,7 +67,7 @@ class BudgetService {
     final responseData = jsonDecode(response.body);
     if (response.statusCode == 200) {
       print(responseData.toString());
-      return responseData['data'];
+      return responseData['status'];
     } else {
       throw Exception("add budget error");
     }

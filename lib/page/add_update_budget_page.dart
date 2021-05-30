@@ -29,8 +29,6 @@ class _AddUpdateBudgetPageState extends State<AddUpdateBudgetPage> {
             final formStatus = state.formStatus;
             if (formStatus is SubmissionFailed) {
               _showSnackBar(context, formStatus.exception.toString());
-            } else if (formStatus is SubmissionSuccess) {
-              Navigator.of(context).pushReplacementNamed(HomePage.routeName);
             }
           },
           builder: (context, state) {

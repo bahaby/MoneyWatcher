@@ -23,11 +23,15 @@ class LocalStorageService {
     return getFromDisk('token') ?? '';
   }
 
+  removeUserTokens() {
+    _removeFromDisk('token');
+    _removeFromDisk('userId');
+    _removeFromDisk('userEmail');
+  }
+
   bool isJwtTokenValid() {
     if (isJwtTokenExpired()) {
-      _removeFromDisk('token');
-      _removeFromDisk('userId');
-      _removeFromDisk('userEmail');
+      removeUserTokens();
       return false;
     } else {
       var jwtMap = JwtDecoder.decode(getJwtToken());

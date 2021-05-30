@@ -15,3 +15,12 @@ class GetBudget extends BudgetDetailEvent {
   @override
   List<Object> get props => [budgetId];
 }
+
+class DeleteBudget extends BudgetDetailEvent {
+  final String budgetId;
+  DeleteBudget({
+    required this.budgetId,
+  });
+  @override
+  List<Object> get props => [budgetId];
+}

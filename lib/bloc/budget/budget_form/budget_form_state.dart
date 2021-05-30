@@ -84,7 +84,7 @@ class BudgetFormState extends Equatable {
   }
 
   bool get isValidDetail {
-    return detail.length > 10;
+    return detail.length > 5;
   }
 
   bool get isValidBudgetType {

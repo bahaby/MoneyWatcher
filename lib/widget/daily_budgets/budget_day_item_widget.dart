@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_watcher/bloc/budget/budget_detail/budget_detail_bloc.dart';
 import 'package:money_watcher/page/detail_budget_page.dart';
 import 'package:money_watcher/view_model/daily_budget_view_model.dart';
 
@@ -20,6 +22,9 @@ class BudgetDayItemWidget extends StatelessWidget {
       margin: EdgeInsets.only(top: 0),
       child: ListTile(
         onTap: () {
+          context
+              .read<BudgetDetailBloc>()
+              .add(GetBudget(budgetId: model.budgetId));
           Navigator.pushNamed(
             context,
             DetailBudgetPage.routeName,

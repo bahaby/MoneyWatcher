@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:money_watcher/bloc/form_submission_status.dart';
 import 'package:money_watcher/model/budget.dart';
 import 'package:money_watcher/model/budget_date.dart';
+import 'package:money_watcher/page/add_update_budget_page.dart';
 import 'package:money_watcher/page/home_page.dart';
 import 'package:money_watcher/page/login_page.dart';
 import 'package:money_watcher/service/budget_service.dart';
@@ -47,6 +48,7 @@ class BudgetFormBloc extends Bloc<BudgetFormEvent, BudgetFormState> {
             isUpdate: true);
       }
       yield stateData;
+      navigatorKey.currentState!.pushNamed(AddUpdateBudgetPage.routeName);
     } else if (event is BudgetFormNameChanged) {
       yield state.copyWith(name: event.name);
     } else if (event is BudgetFormPriceChanged) {
@@ -83,13 +85,15 @@ class BudgetFormBloc extends Bloc<BudgetFormEvent, BudgetFormState> {
         );
         try {
           if (state.isUpdate) {
+            print(1);
             await budgetService.updateBudget(budgetToSubmit);
           } else {
             await budgetService.addBudget(budgetToSubmit);
           }
           yield state.copyWith(formStatus: SubmissionSuccess());
           yield BudgetFormState();
-          navigatorKey.currentState!.pushReplacementNamed(HomePage.routeName);
+          navigatorKey.currentState!
+              .pushNamedAndRemoveUntil(HomePage.routeName, (route) => false);
         } on Exception catch (e) {
           yield state.copyWith(formStatus: SubmissionFailed(e));
         }

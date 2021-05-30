@@ -1,13 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:money_watcher/bloc/app/app_bloc.dart';
 import 'package:money_watcher/bloc/budget/budget_bloc.dart';
-import 'package:money_watcher/bloc/budget/budget_detail/budget_detail_bloc.dart';
 import 'package:money_watcher/bloc/budget/budget_form/budget_form_bloc.dart';
 import 'package:money_watcher/model/category.dart';
-import 'package:money_watcher/page/add_update_budget_page.dart';
 import 'package:money_watcher/page/loading_page.dart';
-import 'package:money_watcher/service/budget_service.dart';
+import 'package:money_watcher/page/login_page.dart';
 import 'package:money_watcher/service/local_storage_service.dart';
 import 'package:money_watcher/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +18,7 @@ import 'package:money_watcher/widget/weekly_budgets/budget_week_overall_widget.d
 class HomePage extends StatefulWidget {
   static const routeName = '/home_page';
 
+  final storageService = getIt<LocalStorageService>();
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -29,7 +29,6 @@ class _HomePageState extends State<HomePage>
   List<Category> categories = [];
   int _selectedTapIndex = 0;
   TabController? _tabController;
-  final storageService = getIt<LocalStorageService>();
   @override
   void initState() {
     super.initState();
@@ -56,6 +55,7 @@ class _HomePageState extends State<HomePage>
                       ? _yearChanger(context)
                       : _monthChanger(context)
                 ],
+                leading: _userButton(context),
                 bottom: TabBar(
                   controller: _tabController,
                   tabs: [
@@ -97,8 +97,7 @@ class _HomePageState extends State<HomePage>
               floatingActionButton: FloatingActionButton(
                 child: Icon(Icons.add),
                 onPressed: () async {
-                  Navigator.of(context)
-                      .pushNamed(AddUpdateBudgetPage.routeName);
+                  context.read<BudgetFormBloc>().add(BudgetFormLoading());
                 },
               ),
             );
@@ -123,7 +122,16 @@ class _HomePageState extends State<HomePage>
                     .read<BudgetBloc>()
                     .add(GetBudgets(selectedDate: _selectedDate));
               }),
-          Text(DateFormat('MM.y').format(_selectedDate)),
+          TextButton(
+              onPressed: () async {
+                _selectedDate =
+                    (await _pickDate(context, currentDate: _selectedDate)) ??
+                        _selectedDate;
+                context
+                    .read<BudgetBloc>()
+                    .add(GetBudgets(selectedDate: _selectedDate));
+              },
+              child: Text(DateFormat('MM.y').format(_selectedDate))),
           IconButton(
               icon: Icon(Icons.arrow_forward_ios_rounded),
               onPressed: () {
@@ -136,6 +144,40 @@ class _HomePageState extends State<HomePage>
         ],
       ),
     );
+  }
+
+  Widget _userButton(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          showDialog(
+              //barrierColor: Color(0x01000000),
+              context: context,
+              builder: (BuildContext context) {
+                return Stack(
+                  children: [
+                    Positioned(
+                      top: 5,
+                      left: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          widget.storageService.removeUserTokens();
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              LoginPage.routeName, (route) => false);
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [Icon(Icons.logout), Text("Çıkış")],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              });
+        },
+        icon: Icon(
+          Icons.account_circle,
+          size: 24,
+        ));
   }
 
   Widget _yearChanger(BuildContext context) {
@@ -151,7 +193,16 @@ class _HomePageState extends State<HomePage>
                     .read<BudgetBloc>()
                     .add(GetBudgets(selectedDate: _selectedDate));
               }),
-          Text(DateFormat('y').format(_selectedDate)),
+          TextButton(
+              onPressed: () async {
+                _selectedDate =
+                    (await _pickDate(context, currentDate: _selectedDate)) ??
+                        _selectedDate;
+                context
+                    .read<BudgetBloc>()
+                    .add(GetBudgets(selectedDate: _selectedDate));
+              },
+              child: Text(DateFormat('y').format(_selectedDate))),
           IconButton(
               icon: Icon(Icons.arrow_forward_ios_rounded),
               onPressed: () {
@@ -164,5 +215,20 @@ class _HomePageState extends State<HomePage>
         ],
       ),
     );
+  }
+
+  Future<DateTime?> _pickDate(
+    BuildContext context, {
+    DateTime? firstDate,
+    DateTime? lastDate,
+    required DateTime currentDate,
+  }) async {
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: firstDate ?? currentDate,
+      firstDate: firstDate ?? DateTime(DateTime.now().year - 5),
+      lastDate: lastDate ?? DateTime(DateTime.now().year + 5),
+    );
+    return Future.value(newDate);
   }
 }
