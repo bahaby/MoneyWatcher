@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_watcher/page/detail_budget_page.dart';
 import 'package:money_watcher/view_model/daily_budget_view_model.dart';
 
 class BudgetDayItemWidget extends StatelessWidget {
@@ -11,12 +12,19 @@ class BudgetDayItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.grey[900],
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.white70, width: 1),
+        side: BorderSide(color: Colors.black, width: 1),
         borderRadius: BorderRadius.zero,
       ),
       margin: EdgeInsets.only(top: 0),
       child: ListTile(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            DetailBudgetPage.routeName,
+          );
+        },
         visualDensity: VisualDensity(horizontal: 0, vertical: -4),
         contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
         dense: true,

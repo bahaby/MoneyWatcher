@@ -19,7 +19,7 @@ class BudgetDayWidget extends StatelessWidget {
           Card(
             margin: EdgeInsets.zero,
             shape: RoundedRectangleBorder(
-              side: BorderSide(color: Colors.white70, width: 1),
+              side: BorderSide(color: Colors.black, width: 1),
               borderRadius: BorderRadius.zero,
             ),
             child: ListTile(
@@ -38,10 +38,13 @@ class BudgetDayWidget extends StatelessWidget {
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    model.dayIncome.toStringAsFixed(2) + ' ₺',
-                    style: TextStyle(
-                      color: Colors.blue,
+                  Container(
+                    padding: EdgeInsets.all(3),
+                    child: Text(
+                      model.dayIncome.toStringAsFixed(2) + ' ₺',
+                      style: TextStyle(
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
                   SizedBox(

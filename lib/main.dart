@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
+        theme: ThemeData.dark(),
         navigatorKey: _navigatorKey,
         title: 'Material App',
         initialRoute: (storageService.isJwtTokenValid())

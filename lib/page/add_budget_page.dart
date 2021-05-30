@@ -158,7 +158,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
           contentPadding: EdgeInsets.zero,
           title: Text(
             'Aylık Tekrar',
-            style: TextStyle(fontSize: 14, color: Colors.black87),
+            style: TextStyle(fontSize: 14),
           ),
           value: state.isMonthly,
           onChanged: (value) {

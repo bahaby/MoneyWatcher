@@ -63,9 +63,18 @@ class _HomePageState extends State<HomePage>
                 bottom: TabBar(
                   controller: _tabController,
                   tabs: [
-                    Text("Günlük"),
-                    Text("Haftalık"),
-                    Text("Aylık"),
+                    SizedBox(
+                      child: Center(child: Text("Günlük")),
+                      height: 30,
+                    ),
+                    SizedBox(
+                      child: Center(child: Text("Haftalık")),
+                      height: 30,
+                    ),
+                    SizedBox(
+                      child: Center(child: Text("Aylık")),
+                      height: 30,
+                    ),
                   ],
                 ),
               ),

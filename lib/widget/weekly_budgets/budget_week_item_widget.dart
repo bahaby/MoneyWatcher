@@ -23,9 +23,6 @@ class BudgetWeekItemWidget extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
         leading: Container(
           padding: EdgeInsets.all(3),
-          decoration: BoxDecoration(
-              border: Border.all(),
-              borderRadius: BorderRadius.all(Radius.circular(3))),
           child: Text(
             DateFormat('dd.MM').format(model.startOfWeek) +
                 ' - ' +
