@@ -47,7 +47,27 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        theme: ThemeData.dark(),
+        theme: ThemeData.dark().copyWith(
+          primaryColor: Color(0xff3F51B5),
+          backgroundColor: Color(0xff3F51B5),
+          scaffoldBackgroundColor: Color(0xff3F51B5),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Color(0xffFF5252))),
+          ),
+          floatingActionButtonTheme:
+              FloatingActionButtonThemeData(backgroundColor: Color(0xffFF5252)),
+          tabBarTheme: TabBarTheme(
+            indicator: ShapeDecoration(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(15),
+                    topLeft: Radius.circular(15)),
+              ),
+              color: Color(0xffFF5252),
+            ),
+          ),
+        ),
         navigatorKey: _navigatorKey,
         title: 'Material App',
         initialRoute: (storageService.isJwtTokenValid())

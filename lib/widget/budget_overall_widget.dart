@@ -33,7 +33,7 @@ class BudgetOverallWidget extends StatelessWidget {
                 Text('Gider'),
                 Text(
                   expense.toStringAsFixed(2),
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: Color(0xffFF5252)),
                 ),
               ],
             ),
@@ -41,10 +41,11 @@ class BudgetOverallWidget extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                Text('Toplam'),
                 Text(
-                  (income - expense).toStringAsFixed(2),
+                  'Toplam',
                 ),
+                Text((income - expense).toStringAsFixed(2),
+                    style: TextStyle(color: Colors.green)),
               ],
             ),
           ),

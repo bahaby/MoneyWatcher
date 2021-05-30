@@ -18,10 +18,6 @@ class BudgetDayWidget extends StatelessWidget {
         children: [
           Card(
             margin: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: Colors.black, width: 1),
-              borderRadius: BorderRadius.zero,
-            ),
             child: ListTile(
               visualDensity: VisualDensity(horizontal: 0, vertical: -3),
               contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
@@ -53,7 +49,7 @@ class BudgetDayWidget extends StatelessWidget {
                       model.dayExpense.toStringAsFixed(2) + ' ₺',
                       textAlign: TextAlign.end,
                       style: TextStyle(
-                        color: Colors.red,
+                        color: Color(0xffFF5252),
                       ),
                     ),
                   ),
