@@ -106,10 +106,12 @@ class LoginPage extends StatelessWidget {
 
   Widget _registerPageLink(BuildContext context) {
     return TextButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Color(0xffbf0000))),
         onPressed: () {
           Navigator.of(context).pushReplacementNamed(RegisterPage.routeName);
         },
-        child: Text("Register"));
+        child: Text("Register", style: TextStyle(color: Colors.white)));
   }
 
   void _showSnackBar(BuildContext context, String message) {

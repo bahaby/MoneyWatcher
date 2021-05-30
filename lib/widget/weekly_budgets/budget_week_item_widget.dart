@@ -13,11 +13,8 @@ class BudgetWeekItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.white70, width: 1),
-        borderRadius: BorderRadius.zero,
-      ),
+      color: Colors.grey[800],
+      margin: EdgeInsets.all(2),
       child: ListTile(
         visualDensity: VisualDensity(horizontal: 0, vertical: -4),
         contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),

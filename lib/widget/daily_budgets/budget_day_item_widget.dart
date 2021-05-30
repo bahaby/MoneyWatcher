@@ -15,11 +15,7 @@ class BudgetDayItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.grey[900],
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.black, width: 1),
-        borderRadius: BorderRadius.zero,
-      ),
-      margin: EdgeInsets.only(top: 0),
+      margin: EdgeInsets.only(top: 3),
       child: ListTile(
         onTap: () {
           context
