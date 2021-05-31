@@ -32,23 +32,34 @@ class LoginPage extends StatelessWidget {
             Navigator.of(context).pushReplacementNamed(HomePage.routeName);
           }
         },
-        child: Form(
-          key: _formKey,
-          child: FocusScope(
-            node: _focusScopeNode,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _emailField(),
-                  _passwordField(),
-                  SizedBox(height: 20),
-                  _loginButton(),
-                  SizedBox(height: 100),
-                  _registerPageLink(context),
-                  Text(storageService.getJwtToken()),
-                ],
+        child: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: FocusScope(
+              node: _focusScopeNode,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 50),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 150,
+                        ),
+                        _emailField(),
+                        _passwordField(),
+                        SizedBox(height: 20),
+                        _loginButton(),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        _registerPageLink(context),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -59,7 +70,10 @@ class LoginPage extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return TextFormField(
         decoration: InputDecoration(
-          icon: Icon(Icons.email),
+          icon: Icon(
+            Icons.email,
+            color: Color(0xffFF5252),
+          ),
           hintText: 'Email',
         ),
         validator: (value) =>
@@ -77,7 +91,10 @@ class LoginPage extends StatelessWidget {
       return TextFormField(
         obscureText: true,
         decoration: InputDecoration(
-          icon: Icon(Icons.security),
+          icon: Icon(
+            Icons.security,
+            color: Color(0xffFF5252),
+          ),
           hintText: 'Password',
         ),
         validator: (value) =>
@@ -108,7 +125,7 @@ class LoginPage extends StatelessWidget {
   Widget _registerPageLink(BuildContext context) {
     return TextButton(
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Color(0xffbf0000))),
+            backgroundColor: MaterialStateProperty.all(Color(0xff388E3C))),
         onPressed: () {
           Navigator.of(context).pushReplacementNamed(RegisterPage.routeName);
         },
