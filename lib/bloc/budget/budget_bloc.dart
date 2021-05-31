@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 import 'package:money_watcher/model/budget.dart';
-import 'package:money_watcher/model/category.dart';
 import 'package:money_watcher/page/login_page.dart';
 import 'package:money_watcher/service/budget_service.dart';
 import 'package:money_watcher/service/local_storage_service.dart';

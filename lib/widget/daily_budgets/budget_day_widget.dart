@@ -17,6 +17,7 @@ class BudgetDayWidget extends StatelessWidget {
       child: Column(
         children: [
           Card(
+            color: Colors.grey[900],
             margin: EdgeInsets.zero,
             child: ListTile(
               visualDensity: VisualDensity(horizontal: 0, vertical: -3),

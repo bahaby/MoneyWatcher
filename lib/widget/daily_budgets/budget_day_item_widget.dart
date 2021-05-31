@@ -14,8 +14,8 @@ class BudgetDayItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[900],
-      margin: EdgeInsets.only(top: 3),
+      color: Colors.grey[800],
+      margin: EdgeInsets.only(top: 4),
       child: ListTile(
         onTap: () {
           context

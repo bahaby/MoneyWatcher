@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:money_watcher/bloc/app/app_bloc.dart';
 import 'package:money_watcher/bloc/budget/budget_detail/budget_detail_bloc.dart';
 import 'package:money_watcher/bloc/budget/budget_form/budget_form_bloc.dart';
-import 'package:money_watcher/model/category.dart';
 
 class DetailBudgetPage extends StatefulWidget {
   static const routeName = '/detail_budget_page';
