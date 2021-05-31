@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:money_watcher/bloc/app/app_bloc.dart';
 import 'package:money_watcher/bloc/budget/budget_bloc.dart';
@@ -29,16 +30,34 @@ class _HomePageState extends State<HomePage>
   List<Category> categories = [];
   int _selectedTapIndex = 0;
   TabController? _tabController;
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  Future onSelectNotification(String? payload) async {
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(HomePage.routeName, (route) => false);
+  }
+
   @override
   void initState() {
     super.initState();
     context.read<BudgetBloc>().add(GetBudgets(selectedDate: _selectedDate));
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _tabController?.addListener(() {
       setState(() {
         _selectedTapIndex = _tabController!.index;
       });
     });
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('flutter_devs');
+    var initializationSettingsIOs = IOSInitializationSettings();
+    var initSetttings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOs);
+
+    flutterLocalNotificationsPlugin.initialize(initSetttings,
+        onSelectNotification: onSelectNotification);
+    scheduleNotification();
   }
 
   @override
@@ -51,9 +70,7 @@ class _HomePageState extends State<HomePage>
             return Scaffold(
               appBar: AppBar(
                 actions: [
-                  (_selectedTapIndex == 2)
-                      ? _yearChanger(context)
-                      : _monthChanger(context)
+                  _monthChanger(context),
                 ],
                 leading: _userButton(context),
                 bottom: TabBar(
@@ -65,10 +82,6 @@ class _HomePageState extends State<HomePage>
                     ),
                     SizedBox(
                       child: Center(child: Text("Haftalık")),
-                      height: 30,
-                    ),
-                    SizedBox(
-                      child: Center(child: Text("Aylık")),
                       height: 30,
                     ),
                   ],
@@ -90,7 +103,6 @@ class _HomePageState extends State<HomePage>
                               budgetsToMap: state.selectedMonthBudgets,
                               selectedDate: _selectedDate),
                         )),
-                        Center(child: Text("Aylık")),
                       ],
                     )
                   : Center(child: CircularProgressIndicator()),
@@ -109,6 +121,38 @@ class _HomePageState extends State<HomePage>
     });
   }
 
+  Future<void> scheduleNotification() async {
+    var now = DateTime.now();
+    final notificationMessage =
+        widget.storageService.getFromDisk('notification');
+    final lastShown = widget.storageService.getFromDisk('lastShown');
+    final today = DateFormat("d.MM.y").format(now);
+    print(widget.storageService.getFromDisk('notification'));
+    if (notificationMessage != null && today != lastShown) {
+      var scheduledNotificationDateTime =
+          DateTime(now.year, now.month, now.day, 12, 0);
+      print(scheduledNotificationDateTime);
+      widget.storageService.saveToDisk("lastShown", today);
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'channel id',
+        'channel name',
+        'channel description',
+        icon: 'flutter_devs',
+        largeIcon: DrawableResourceAndroidBitmap('flutter_devs'),
+      );
+      var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+      var platformChannelSpecifics = NotificationDetails(
+          android: androidPlatformChannelSpecifics,
+          iOS: iOSPlatformChannelSpecifics);
+      await flutterLocalNotificationsPlugin.schedule(
+          0,
+          'Yaklaşan etkinlikleriniz var',
+          notificationMessage,
+          scheduledNotificationDateTime,
+          platformChannelSpecifics);
+    }
+  }
+
   Widget _monthChanger(BuildContext context) {
     return Container(
       child: Row(
@@ -116,13 +160,16 @@ class _HomePageState extends State<HomePage>
           IconButton(
               icon: Icon(Icons.arrow_back_ios_rounded),
               onPressed: () {
-                _selectedDate = DateTime(_selectedDate.year,
-                    _selectedDate.month - 1, _selectedDate.day);
+                _selectedDate =
+                    DateTime(_selectedDate.year, _selectedDate.month - 1, 1);
                 context
                     .read<BudgetBloc>()
                     .add(GetBudgets(selectedDate: _selectedDate));
               }),
           TextButton(
+              style: TextButton.styleFrom(
+                primary: Colors.white,
+              ),
               onPressed: () async {
                 _selectedDate =
                     (await _pickDate(context, currentDate: _selectedDate)) ??
@@ -135,8 +182,8 @@ class _HomePageState extends State<HomePage>
           IconButton(
               icon: Icon(Icons.arrow_forward_ios_rounded),
               onPressed: () {
-                _selectedDate = DateTime(_selectedDate.year,
-                    _selectedDate.month + 1, _selectedDate.day);
+                _selectedDate =
+                    DateTime(_selectedDate.year, _selectedDate.month + 1, 1);
                 context
                     .read<BudgetBloc>()
                     .add(GetBudgets(selectedDate: _selectedDate));
@@ -178,43 +225,6 @@ class _HomePageState extends State<HomePage>
           Icons.account_circle,
           size: 24,
         ));
-  }
-
-  Widget _yearChanger(BuildContext context) {
-    return Container(
-      child: Row(
-        children: [
-          IconButton(
-              icon: Icon(Icons.arrow_back_ios_rounded),
-              onPressed: () {
-                _selectedDate = DateTime(_selectedDate.year - 1,
-                    _selectedDate.month, _selectedDate.day);
-                context
-                    .read<BudgetBloc>()
-                    .add(GetBudgets(selectedDate: _selectedDate));
-              }),
-          TextButton(
-              onPressed: () async {
-                _selectedDate =
-                    (await _pickDate(context, currentDate: _selectedDate)) ??
-                        _selectedDate;
-                context
-                    .read<BudgetBloc>()
-                    .add(GetBudgets(selectedDate: _selectedDate));
-              },
-              child: Text(DateFormat('y').format(_selectedDate))),
-          IconButton(
-              icon: Icon(Icons.arrow_forward_ios_rounded),
-              onPressed: () {
-                _selectedDate = DateTime(_selectedDate.year + 1,
-                    _selectedDate.month, _selectedDate.day);
-                context
-                    .read<BudgetBloc>()
-                    .add(GetBudgets(selectedDate: _selectedDate));
-              })
-        ],
-      ),
-    );
   }
 
   Future<DateTime?> _pickDate(

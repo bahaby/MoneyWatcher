@@ -21,7 +21,7 @@ class _AddUpdateBudgetPageState extends State<AddUpdateBudgetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Add Budget"),
+          title: Text("Bütçe"),
         ),
         body: BlocConsumer<BudgetFormBloc, BudgetFormState>(
           listener: (context, state) {
@@ -31,7 +31,7 @@ class _AddUpdateBudgetPageState extends State<AddUpdateBudgetPage> {
             }
           },
           builder: (context, state) {
-            return state is BudgetFormLoading
+            return state.formStatus is FormLoading
                 ? Center(child: CircularProgressIndicator())
                 : Column(
                     children: [
@@ -62,7 +62,7 @@ class _AddUpdateBudgetPageState extends State<AddUpdateBudgetPage> {
                   _startDateField(),
                   _finishDateField(),
                   SizedBox(height: 20),
-                  _submitButton(),
+                  _submitButtons(),
                 ],
               ),
             ),
@@ -247,20 +247,31 @@ class _AddUpdateBudgetPageState extends State<AddUpdateBudgetPage> {
     });
   }
 
-  Widget _submitButton() {
+  Widget _submitButtons() {
     return BlocBuilder<BudgetFormBloc, BudgetFormState>(
         builder: (context, state) {
-      return Container(
-        child: state.formStatus is FormSubmitting
-            ? CircularProgressIndicator()
-            : ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    context.read<BudgetFormBloc>().add(BudgetFormSubmitted());
-                  }
-                },
-                child: Text('Ekle'),
-              ),
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          state.isUpdate
+              ? ElevatedButton(
+                  onPressed: () {
+                    context
+                        .read<BudgetFormBloc>()
+                        .add(DeleteBudget(budgetId: state.id));
+                  },
+                  child: Text('Sil'),
+                )
+              : Container(),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                context.read<BudgetFormBloc>().add(BudgetFormSubmitted());
+              }
+            },
+            child: Text(state.isUpdate ? 'Güncelle' : 'Ekle'),
+          ),
+        ],
       );
     });
   }

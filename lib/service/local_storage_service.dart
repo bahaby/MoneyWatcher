@@ -24,9 +24,9 @@ class LocalStorageService {
   }
 
   removeUserTokens() {
-    _removeFromDisk('token');
-    _removeFromDisk('userId');
-    _removeFromDisk('userEmail');
+    removeFromDisk('token');
+    removeFromDisk('userId');
+    removeFromDisk('userEmail');
   }
 
   bool isJwtTokenValid() {
@@ -58,7 +58,7 @@ class LocalStorageService {
     }
   }
 
-  void _removeFromDisk(String key) {
+  void removeFromDisk(String key) {
     _preferences?.remove(key);
   }
 

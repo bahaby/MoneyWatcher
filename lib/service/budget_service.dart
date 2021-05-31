@@ -115,6 +115,7 @@ class BudgetService {
       budgets = responseData['data'].map<Budget>((budget) {
         return Budget.fromJson(budget);
       }).toList();
+      _notificationWorker(budgets, year, month);
       return budgets;
     } else {
       throw Exception("budgets error");
@@ -132,6 +133,27 @@ class BudgetService {
       return categories;
     } else {
       throw Exception("categories error");
+    }
+  }
+
+  _notificationWorker(List<Budget> budgets, int year, int month) {
+    if (budgets.isEmpty) {
+      return;
+    }
+    var activityCount = 0;
+    var now = DateTime.now();
+    budgets.forEach((budget) {
+      var now = DateTime.now();
+      var startDate = budget.budgetDate.startDate;
+      if (startDate.day == now.day + 1) {
+        activityCount++;
+      }
+    });
+    if (activityCount >= 1 && now.month == month && now.year == year) {
+      storageService.saveToDisk(
+          "notification", "$activityCount adet aktiviteniz var.");
+    } else {
+      storageService.removeFromDisk('notification');
     }
   }
 }

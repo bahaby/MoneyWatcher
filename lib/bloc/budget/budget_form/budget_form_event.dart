@@ -82,7 +82,16 @@ class BudgetFormIsMonthlyChanged extends BudgetFormEvent {
 class BudgetFormSubmitted extends BudgetFormEvent {}
 
 class BudgetFormLoading extends BudgetFormEvent {
-  final Budget? budgetToUpdate;
+  final String? budgetId;
 
-  BudgetFormLoading({this.budgetToUpdate});
+  BudgetFormLoading({this.budgetId});
+}
+
+class DeleteBudget extends BudgetFormEvent {
+  final String budgetId;
+  DeleteBudget({
+    required this.budgetId,
+  });
+  @override
+  List<Object> get props => [budgetId];
 }

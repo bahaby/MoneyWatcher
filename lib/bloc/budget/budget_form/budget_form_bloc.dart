@@ -30,25 +30,28 @@ class BudgetFormBloc extends Bloc<BudgetFormEvent, BudgetFormState> {
     BudgetFormEvent event,
   ) async* {
     if (event is BudgetFormLoading) {
-      var stateData = state.copyWith(
-        formStatus: InitialFormStatus(),
+      navigatorKey.currentState!.pushNamed(AddUpdateBudgetPage.routeName);
+      var stateData = BudgetFormState().copyWith(
         isUpdate: false,
       );
-      if (event.budgetToUpdate != null) {
+      if (event.budgetId != null) {
+        yield stateData.copyWith(formStatus: FormLoading());
+        final budget = await budgetService.getBudget(event.budgetId!);
         stateData = stateData.copyWith(
-            id: event.budgetToUpdate!.id,
-            budgetType: event.budgetToUpdate!.budgetType,
-            categoryId: event.budgetToUpdate!.categoryId,
-            detail: event.budgetToUpdate!.detail,
-            isMonthly: event.budgetToUpdate!.budgetDate.isMonthly,
-            finishDate: event.budgetToUpdate!.budgetDate.finishDate,
-            startDate: event.budgetToUpdate!.budgetDate.startDate,
-            name: event.budgetToUpdate!.name,
-            price: event.budgetToUpdate!.price.toString(),
-            isUpdate: true);
+          id: budget.id,
+          budgetType: budget.budgetType,
+          categoryId: budget.categoryId,
+          detail: budget.detail,
+          isMonthly: budget.budgetDate.isMonthly,
+          finishDate: budget.budgetDate.finishDate,
+          startDate: budget.budgetDate.startDate,
+          name: budget.name,
+          price: budget.price.toString(),
+          isUpdate: true,
+          formStatus: InitialFormStatus(),
+        );
       }
       yield stateData;
-      navigatorKey.currentState!.pushNamed(AddUpdateBudgetPage.routeName);
     } else if (event is BudgetFormNameChanged) {
       yield state.copyWith(name: event.name);
     } else if (event is BudgetFormPriceChanged) {
@@ -69,7 +72,7 @@ class BudgetFormBloc extends Bloc<BudgetFormEvent, BudgetFormState> {
       if (!storageService.isJwtTokenValid()) {
         navigatorKey.currentState!.pushReplacementNamed(LoginPage.routeName);
       } else {
-        yield state.copyWith(formStatus: FormSubmitting());
+        yield state.copyWith(formStatus: FormLoading());
         var budgetToSubmit = Budget(
           id: state.id,
           budgetDate: BudgetDate(
@@ -98,6 +101,11 @@ class BudgetFormBloc extends Bloc<BudgetFormEvent, BudgetFormState> {
           yield state.copyWith(formStatus: SubmissionFailed(e));
         }
       }
+    } else if (event is DeleteBudget) {
+      yield state.copyWith(formStatus: FormLoading());
+      await budgetService.deleteBudget(event.budgetId);
+      navigatorKey.currentState!
+          .pushNamedAndRemoveUntil(HomePage.routeName, (route) => false);
     }
   }
 }
